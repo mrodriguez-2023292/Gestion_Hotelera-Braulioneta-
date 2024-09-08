@@ -19,7 +19,7 @@ Bienvenido al repositorio del **Sistema de Gestión Hotelera**. Este proyecto es
 
 ## Instalación
 
-1. Clona el repositorio: `git clone https://github.com/mrodriguez-2023292/Gestion_Hotelera.git`
+1. Clona el repositorio: `git clone https://github.com/mrodriguez-2023292/Gestion_Hotelera-Braulioneta-.git`
 2. Navega al directorio del proyecto: `cd nombre-del-repositorio`
 3. Sigue las instrucciones en el archivo `README.md` para configurar el entorno y las dependencias.
 
