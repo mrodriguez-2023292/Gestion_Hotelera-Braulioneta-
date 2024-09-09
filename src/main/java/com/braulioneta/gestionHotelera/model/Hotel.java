@@ -20,7 +20,7 @@ public class Hotel {
     private Long id;
 
     @NotBlank
-    private String hotel_name;
+    private String name;
 
     @NotBlank
     private String address;
