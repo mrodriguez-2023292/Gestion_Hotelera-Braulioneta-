@@ -1,5 +1,24 @@
 package com.braulioneta.gestionHotelera.DTO;
 
-public class RoomDTO {
+import com.braulioneta.gestionHotelera.utils.Status;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+
+@Data
+public class RoomDTO {
+    @NotBlank(message = "El tipo de la habitacion no puede ir vacío")
+    private String type;
+    
+    @NotBlank(message = "La capacidad no puede ir vacía")
+    private Integer capacity;
+    
+    @NotBlank(message = "El precio no puede ir vacío")
+    private Long price;
+    
+    @NotBlank(message = "Seleccione una opción, si no se quedará como disponible.")
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.AVAILABLE;;
 }

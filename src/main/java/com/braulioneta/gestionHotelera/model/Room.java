@@ -33,6 +33,7 @@ public class Room {
     @NotBlank
     private Long price;
 
+    @NotBlank
     @Enumerated(EnumType.STRING)
     private Status status = Status.AVAILABLE;
 
