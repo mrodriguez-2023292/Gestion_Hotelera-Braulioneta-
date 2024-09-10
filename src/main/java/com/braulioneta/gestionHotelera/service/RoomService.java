@@ -28,4 +28,9 @@ public class RoomService implements IRoomService{
     public Room register(Room room){
         return roomRepository.save(room);
     }
+
+    @Override
+    public void eliminate(Room room) {
+        roomRepository.delete(room);
+    }
 }

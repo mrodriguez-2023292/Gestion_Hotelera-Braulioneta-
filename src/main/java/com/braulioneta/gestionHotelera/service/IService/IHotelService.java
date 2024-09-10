@@ -10,4 +10,6 @@ public interface IHotelService {
     Hotel getHotel(Long id);
 
     Hotel register(Hotel hotel);
+
+    void eliminate(Hotel hotel);
 }
