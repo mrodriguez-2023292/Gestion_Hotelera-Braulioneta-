@@ -27,4 +27,5 @@ public class RoomService implements IRoomService{
     @Override
     public Room register(Room room){
         return roomRepository.save(room);
+    }
 }
