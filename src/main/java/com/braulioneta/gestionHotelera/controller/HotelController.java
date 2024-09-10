@@ -23,7 +23,7 @@ import com.braulioneta.gestionHotelera.service.HotelService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/gestionHotelera/v1/auth")
+@RequestMapping("/gestionHotelera/hotel")
 public class HotelController {
     
     @Autowired
