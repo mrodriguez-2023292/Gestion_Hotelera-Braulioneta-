@@ -34,7 +34,9 @@ public class RoomController {
     @Autowired
     RoomService roomService;
 
-    @GetMapping()
+    // Obtiene la lista de todas las habitaciones.
+    // @return ResponseEntity con la lista de habitaciones si la operación es exitosa. Si ocurre un error, devuelve una respuesta con un mensaje de error adecuado.
+    @GetMapping
     public ResponseEntity<?> getMethodId() {
         Map<String, Object> res = new HashMap<>();
         try { 
@@ -54,6 +56,10 @@ public class RoomController {
         }
     }
 
+    // Guarda una nueva habitación en la base de datos.
+    // @param room DTO que contiene los datos de la habitación a guardar.
+    // @param result Resultados de la validación del DTO.
+    // @return ResponseEntity con un mensaje de éxito si la operación es exitosa, o un mensaje de error si ocurre un problema durante la validación o el guardado.
     @PostMapping("/save")
     public ResponseEntity<?> saveRoom(
         @Valid @ModelAttribute RoomDTO room,
@@ -79,15 +85,18 @@ public class RoomController {
                 room.getStatus()
             );
             roomService.saveRoom(newroom);
-            res.put("message", "Habitacion guardada correctamente");
+            res.put("message", "Habitación guardada correctamente");
             return ResponseEntity.ok(res);
         } catch (Exception err) {
-            res.put("message", "Error al guardar la habitacion, intente de nuevo más tarde");
+            res.put("message", "Error al guardar la habitación, intente de nuevo más tarde");
             res.put("error", err.getMessage());
             return ResponseEntity.internalServerError().body(res);
         }
     }
 
+    // Obtiene una habitación por su ID.
+    // @param id ID de la habitación que se desea obtener.
+    // @return ResponseEntity con la habitación si se encuentra o un mensaje de error si no existe.
     @GetMapping("/{id}")
     public ResponseEntity<?> getRoomId(@PathVariable Long id) {
         Map<String, Object> res = new HashMap<>();
@@ -110,10 +119,13 @@ public class RoomController {
             return ResponseEntity.internalServerError().body(res);
         }
     }
-    
 
+    // Edita una habitación existente.
+    // @param id ID de la habitación que se desea editar.
+    // @param received Objeto Room con los datos actualizados.
+    // @return ResponseEntity con la habitación actualizada si la operación es exitosa, o un mensaje de error si ocurre un problema.
     @PutMapping("/edit/{id}")
-    public ResponseEntity<?> editRoom(@PathVariable Long id, @RequestBody Room received){
+    public ResponseEntity<?> editRoom(@PathVariable Long id, @RequestBody Room received) {
         Map<String, Object> res = new HashMap<>();
         Room room = roomService.getRoom(id);
 
@@ -142,8 +154,11 @@ public class RoomController {
         } 
     }
 
+    // Elimina una habitación por su ID.
+    // @param id ID de la habitación que se desea eliminar.
+    // @return ResponseEntity con un mensaje de confirmación si la operación es exitosa, o un mensaje de error si ocurre un problema.
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteRoom(@PathVariable Long id){
+    public ResponseEntity<?> deleteRoom(@PathVariable Long id) {
         Map<String, Boolean> answer = new HashMap<>();
         Map<String, Object> res = new HashMap<>();
         Room room = roomService.getRoom(id);

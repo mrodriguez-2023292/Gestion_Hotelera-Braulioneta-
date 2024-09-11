@@ -14,14 +14,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Data // Genera automáticamente getters, setters, equals, hashCode y toString
+@Entity // Indica que esta clase es una entidad JPA (una tabla en la base de datos)
+@AllArgsConstructor // Crea un constructor con todos los atributos
+@NoArgsConstructor // Crea un constructor sin parámetros
+
 public class Room {
 
-    // Identificador único de la habitación. Se genera automáticamente.
-    @Id
+    @Id// Identificador único de la habitación. Se genera automáticamente.
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

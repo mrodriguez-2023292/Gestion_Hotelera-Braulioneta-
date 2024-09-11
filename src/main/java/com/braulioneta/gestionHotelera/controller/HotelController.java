@@ -30,14 +30,16 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/gestionHotelera/hotel")
 public class HotelController {
-    
+
     @Autowired
     HotelService hotelService;
 
+    // Obtiene la lista de todos los hoteles.
+    // @return ResponseEntity con la lista de hoteles si la operación es exitosa. Si ocurre un error, devuelve una respuesta con un mensaje de error adecuado.
     @GetMapping()
     public ResponseEntity<?> getHotels() {
         Map<String, Object> res = new HashMap<>();
-        try { 
+        try {
             return ResponseEntity.ok().body(hotelService.listHotels());
         } catch (CannotCreateTransactionException err) {
             res.put("message", "Error al momento de conectarse a la BD");
@@ -53,7 +55,11 @@ public class HotelController {
             return ResponseEntity.internalServerError().body(res);
         }
     }
-    
+
+    // Guarda un nuevo hotel en la base de datos.
+    // @param hotel DTO que contiene los datos del hotel a guardar.
+    // @param result Resultados de la validación del DTO.
+    // @return ResponseEntity con un mensaje de éxito si la operación es exitosa, o un mensaje de error si ocurre un problema durante la validación o el guardado.
     @PostMapping("/save")
     public ResponseEntity<?> saveHotel(
         @Valid @ModelAttribute HotelDTO hotel,
@@ -89,7 +95,9 @@ public class HotelController {
         }
     }
 
-    
+    // Obtiene un hotel por su ID.
+    // @param id ID del hotel que se desea obtener.
+    // @return ResponseEntity con el hotel si se encuentra o un mensaje de error si no existe.
     @GetMapping("/{id}")
     public ResponseEntity<?> getHotelId(@PathVariable Long id) {
         Map<String, Object> res = new HashMap<>();
@@ -112,10 +120,13 @@ public class HotelController {
             return ResponseEntity.internalServerError().body(res);
         }
     }
-    
 
+    // Edita un hotel existente.
+    // @param id ID del hotel que se desea editar.
+    // @param received Objeto Hotel con los datos actualizados.
+    // @return ResponseEntity con el hotel actualizado si la operación es exitosa, o un mensaje de error si ocurre un problema.
     @PutMapping("/edit/{id}")
-    public ResponseEntity<?> editHotel(@PathVariable Long id, @RequestBody Hotel received){
+    public ResponseEntity<?> editHotel(@PathVariable Long id, @RequestBody Hotel received) {
         Map<String, Object> res = new HashMap<>();
         Hotel hotel = hotelService.getHotel(id);
 
@@ -124,7 +135,7 @@ public class HotelController {
         hotel.setCategory(received.getCategory());
         hotel.setPhone(received.getPhone());
 
-        try { 
+        try {
             return ResponseEntity.ok().body(hotelService.saveHotel(hotel));
         } catch (NoResultException err) {
             res.put("message", "El hotel con el ID proporcionado no existe");
@@ -141,16 +152,19 @@ public class HotelController {
             res.put("message", "Error general al obtener los datos");
             res.put("Error", err.getMessage());
             return ResponseEntity.internalServerError().body(res);
-        } 
+        }
     }
 
+    // Elimina un hotel por su ID.
+    // @param id ID del hotel que se desea eliminar.
+    // @return ResponseEntity con un mensaje de confirmación si la operación es exitosa, o un mensaje de error si ocurre un problema.
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteHotel(@PathVariable Long id){
+    public ResponseEntity<?> deleteHotel(@PathVariable Long id) {
         Map<String, Boolean> answer = new HashMap<>();
         Map<String, Object> res = new HashMap<>();
         Hotel hotel = hotelService.getHotel(id);
 
-        try { 
+        try {
             hotelService.eliminateHotel(hotel);
             answer.put("Eliminado", true);
             return ResponseEntity.ok(answer);
@@ -169,6 +183,6 @@ public class HotelController {
             res.put("message", "Error general al obtener los datos");
             res.put("Error", err.getMessage());
             return ResponseEntity.internalServerError().body(res);
-        } 
+        }
     }
 }

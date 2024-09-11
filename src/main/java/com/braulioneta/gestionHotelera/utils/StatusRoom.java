@@ -1,8 +1,11 @@
 package com.braulioneta.gestionHotelera.utils;
 
+// Enumeración que define el estatus de una habitación (Room)
 public enum StatusRoom {
-    //Estatus para room(habitacion)
+    // La habitación está disponible
     AVAILABLE,
+    // La habitación está reservada
     RESERVED,
+    // La habitación está en mantenimiento
     MAINTENANCE
 }
