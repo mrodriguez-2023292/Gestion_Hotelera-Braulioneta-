@@ -9,7 +9,7 @@ public interface IHotelService {
 
     Hotel getHotel(Long id);
 
-    Hotel register(Hotel hotel);
+    Hotel saveHotel(Hotel hotel);
 
-    void eliminate(Hotel hotel);
+    void eliminateHotel(Hotel hotel);
 }

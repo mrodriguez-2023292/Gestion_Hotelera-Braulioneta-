@@ -25,12 +25,12 @@ public class RoomService implements IRoomService{
     }
 
     @Override
-    public Room register(Room room){
+    public Room saveRoom(Room room){
         return roomRepository.save(room);
     }
 
     @Override
-    public void eliminate(Room room) {
+    public void eliminateRoom(Room room) {
         roomRepository.delete(room);
     }
 }

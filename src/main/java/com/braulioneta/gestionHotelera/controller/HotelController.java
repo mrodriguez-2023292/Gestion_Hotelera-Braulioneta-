@@ -54,8 +54,8 @@ public class HotelController {
         }
     }
     
-    @PostMapping("/register")
-    public ResponseEntity<?> register(
+    @PostMapping("/save")
+    public ResponseEntity<?> saveHotel(
         @Valid @ModelAttribute HotelDTO hotel,
         BindingResult result
     ) {
@@ -79,7 +79,7 @@ public class HotelController {
                 hotel.getPhone(),
                 hotel.getEmail_contact()
             );
-            hotelService.register(newhotel);
+            hotelService.saveHotel(newhotel);
             res.put("message", "Hotel guardado correctamente");
             return ResponseEntity.ok(res);
         } catch (Exception err) {
@@ -114,7 +114,7 @@ public class HotelController {
     }
     
 
-    @PutMapping("/editar/{id}")
+    @PutMapping("/edit/{id}")
     public ResponseEntity<?> editHotel(@PathVariable Long id, @RequestBody Hotel received){
         Map<String, Object> res = new HashMap<>();
         Hotel hotel = hotelService.getHotel(id);
@@ -125,7 +125,7 @@ public class HotelController {
         hotel.setPhone(received.getPhone());
 
         try { 
-            return ResponseEntity.ok().body(hotelService.register(hotel));
+            return ResponseEntity.ok().body(hotelService.saveHotel(hotel));
         } catch (NoResultException err) {
             res.put("message", "El hotel con el ID proporcionado no existe");
             return ResponseEntity.status(503).body(res);
@@ -144,14 +144,14 @@ public class HotelController {
         } 
     }
 
-    @DeleteMapping("/eliminar/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteHotel(@PathVariable Long id){
         Map<String, Boolean> answer = new HashMap<>();
         Map<String, Object> res = new HashMap<>();
         Hotel hotel = hotelService.getHotel(id);
 
         try { 
-            hotelService.eliminate(hotel);
+            hotelService.eliminateHotel(hotel);
             answer.put("Eliminado", true);
             return ResponseEntity.ok(answer);
         } catch (NoResultException err) {

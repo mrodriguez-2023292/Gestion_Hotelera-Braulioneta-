@@ -25,12 +25,12 @@ public class HotelService implements IHotelService{
     }
 
     @Override
-    public Hotel register(Hotel hotel){
+    public Hotel saveHotel(Hotel hotel){
         return hotelRepository.save(hotel);
     }
 
     @Override
-    public void eliminate(Hotel hotel) {
+    public void eliminateHotel(Hotel hotel) {
         hotelRepository.delete(hotel);
     }
 }

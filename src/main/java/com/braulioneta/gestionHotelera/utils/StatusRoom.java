@@ -1,11 +1,8 @@
 package com.braulioneta.gestionHotelera.utils;
 
-public enum Status {
+public enum StatusRoom {
     //Estatus para room(habitacion)
     AVAILABLE,
     RESERVED,
-    MAINTENANCE,
-    //Estatus para reservation(reservación)
-    CONFIRMED,
-    CANCELLED
+    MAINTENANCE
 }

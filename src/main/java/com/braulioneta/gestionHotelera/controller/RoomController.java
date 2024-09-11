@@ -54,8 +54,8 @@ public class RoomController {
         }
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(
+    @PostMapping("/save")
+    public ResponseEntity<?> saveRoom(
         @Valid @ModelAttribute RoomDTO room,
         BindingResult result
     ) {
@@ -78,7 +78,7 @@ public class RoomController {
                 room.getPrice(),
                 room.getStatus()
             );
-            roomService.register(newroom);
+            roomService.saveRoom(newroom);
             res.put("message", "Habitacion guardada correctamente");
             return ResponseEntity.ok(res);
         } catch (Exception err) {
@@ -112,7 +112,7 @@ public class RoomController {
     }
     
 
-    @PutMapping("/editar/{id}")
+    @PutMapping("/edit/{id}")
     public ResponseEntity<?> editRoom(@PathVariable Long id, @RequestBody Room received){
         Map<String, Object> res = new HashMap<>();
         Room room = roomService.getRoom(id);
@@ -123,7 +123,7 @@ public class RoomController {
         room.setStatus(received.getStatus());
 
         try { 
-            return ResponseEntity.ok().body(roomService.register(room));
+            return ResponseEntity.ok().body(roomService.saveRoom(room));
         } catch (NoResultException err) {
             res.put("message", "La habitación con el ID proporcionado no existe");
             return ResponseEntity.status(503).body(res);
@@ -142,14 +142,14 @@ public class RoomController {
         } 
     }
 
-    @DeleteMapping("/eliminar/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteRoom(@PathVariable Long id){
         Map<String, Boolean> answer = new HashMap<>();
         Map<String, Object> res = new HashMap<>();
         Room room = roomService.getRoom(id);
 
         try { 
-            roomService.eliminate(room);
+            roomService.eliminateRoom(room);
             answer.put("Eliminado", true);
             return ResponseEntity.ok(answer);
         } catch (NoResultException err) {

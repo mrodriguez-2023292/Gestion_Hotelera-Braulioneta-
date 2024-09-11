@@ -9,7 +9,7 @@ public interface IRoomService {
 
     Room getRoom(Long id);
 
-    Room register(Room room);
+    Room saveRoom(Room room);
 
-    void eliminate(Room room);
+    void eliminateRoom(Room room);
 }

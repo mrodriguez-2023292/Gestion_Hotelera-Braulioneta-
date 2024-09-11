@@ -1,6 +1,6 @@
 package com.braulioneta.gestionHotelera.DTO;
 
-import com.braulioneta.gestionHotelera.utils.Status;
+import com.braulioneta.gestionHotelera.utils.StatusRoom;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -21,5 +21,5 @@ public class RoomDTO {
     
     @NotNull(message = "Seleccione una opción, si no se quedará como disponible.")
     @Enumerated(EnumType.STRING)
-    private Status status = Status.AVAILABLE;
+    private StatusRoom status = StatusRoom.AVAILABLE;
 }
