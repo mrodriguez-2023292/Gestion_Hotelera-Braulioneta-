@@ -1,12 +1,10 @@
 package com.braulioneta.gestionHotelera.model;
 
-import java.sql.Date;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,28 +16,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 
-
-public class Report {
+public class AdditionalService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
-    private String hotel_name;
-    @NotNull
-    @FutureOrPresent
-    private Date report_date;
-    @NotNull
-    private Long total_reservations;
-    @NotNull
-    private Long total_rooms;
-    @NotNull
-    private Long occupied_rooms;
-    @NotNull
-    private Float occupancy_rate;
-    @NotBlank
-    private String most_requested_hotel;
- 
-   
 
+    @NotBlank
+    private String service_name;
 
+    @NotNull
+    private float price;
+
+    @NotNull
+    @ManyToOne
+    private Event event;
 }
