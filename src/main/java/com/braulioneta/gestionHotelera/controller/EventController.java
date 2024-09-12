@@ -81,6 +81,7 @@ public class EventController {
 
             );
             eventService.addEvent(newEvent);
+            res.put("message", "El evento se reservo correctamente");
             return ResponseEntity.ok(res);
         } catch (Exception err) {
             res.put("message", "Error al guardar la habitacion, intente de nuevo más tarde");
