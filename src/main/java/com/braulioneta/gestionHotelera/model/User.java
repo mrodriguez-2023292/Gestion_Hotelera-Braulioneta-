@@ -30,6 +30,7 @@ public class User {
     private String name;
 
     @NotBlank
+    @Column(unique = true)
     private String surname;
 
     @Email
@@ -37,7 +38,8 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    //Password
+    @NotBlank
+    private String password;
     
     @NotBlank
     private String phone; 
