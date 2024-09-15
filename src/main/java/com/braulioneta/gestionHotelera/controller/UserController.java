@@ -13,9 +13,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.braulioneta.gestionHotelera.DTO.UserLoginDTO;
 import com.braulioneta.gestionHotelera.DTO.UserRegisterDTO;
 import com.braulioneta.gestionHotelera.model.User;
 import com.braulioneta.gestionHotelera.service.UserService;
@@ -90,6 +92,25 @@ public class UserController {
             }
         
             
+    }
+    
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UserLoginDTO user) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            System.out.println(user.getPassword());
+            if(userService.login(user.getUsername(), user.getPassword())){
+                res.put("message", "Usuario logeado satisfactoriamente");
+                return ResponseEntity.ok(res);
+            }else{
+                res.put("message", "Credenciales inválidas");
+                return ResponseEntity.status(401).body(res);
+            }
+        } catch (Exception err) {
+            res.put("message", "Error general al iniciar sesión");
+            res.put("error", err);
+            return ResponseEntity.internalServerError().body(res);
+        }
     }
     
 
