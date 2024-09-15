@@ -1,17 +1,27 @@
 package com.braulioneta.gestionHotelera.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.CannotCreateTransactionException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.braulioneta.gestionHotelera.DTO.UserRegisterDTO;
+import com.braulioneta.gestionHotelera.model.User;
 import com.braulioneta.gestionHotelera.service.UserService;
+
+import jakarta.validation.Valid;
+
 
 
 @RestController
@@ -43,5 +53,44 @@ public class UserController {
             return ResponseEntity.internalServerError().body(res);
         }
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(
+        @Valid @ModelAttribute UserRegisterDTO user,
+        BindingResult result
+        ) {
+            Map<String,Object> res = new HashMap<>();
+            if(result.hasErrors()){
+                List<String> errors = result.getFieldErrors()
+                .stream()
+                .map(error -> error.getDefaultMessage()).collect(Collectors.toList());
+                res.put("message", "Error con las validaciones, por favor ingresa todos los campos");
+                res.put("Errors",errors);
+                return ResponseEntity.badRequest().body(res);
+            }
+            try {
+                Long id = null;
+                User newUser = new User(
+                    id,
+                    user.getName(),
+                    user.getSurname(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.getPassword(),
+                    user.getPhone(),
+                    user.getUserType()
+                );
+                userService.register(newUser);
+                res.put("message", "Usuario guardado exitosamente");
+                return ResponseEntity.ok(res);
+            } catch (Exception e) {
+                res.put("message", "Error al guardar el usuario, intentelo en otro momento0");
+                res.put("Error", e);
+                return ResponseEntity.internalServerError().body(res);
+            }
+        
+            
+    }
+    
 
 }
