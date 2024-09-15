@@ -2,6 +2,7 @@ package com.braulioneta.gestionHotelera.service.IService;
 
 import java.util.List;
 
+import com.braulioneta.gestionHotelera.DTO.EventSaveDTO;
 import com.braulioneta.gestionHotelera.model.Event;
 
 public interface IEventService {
@@ -9,8 +10,10 @@ public interface IEventService {
 
     Event  getEvent(Long id);
 
-    Event addEvent(Event event);
+    Event addEvent(EventSaveDTO eventDto);
 
     void cancelEvent(Event event);
+
+    Event updateEvent(Long id, EventSaveDTO eventDTO);
 
 }

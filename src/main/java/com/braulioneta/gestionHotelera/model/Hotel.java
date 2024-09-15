@@ -37,4 +37,5 @@ public class Hotel {
     @NotBlank
     @Column(unique = true)
     private String email_contact;
+    
 }
