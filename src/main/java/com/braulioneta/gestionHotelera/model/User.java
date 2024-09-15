@@ -46,5 +46,5 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Roles roles;
+    private Roles userType;
 }
