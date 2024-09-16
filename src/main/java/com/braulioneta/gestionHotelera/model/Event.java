@@ -1,11 +1,12 @@
 package com.braulioneta.gestionHotelera.model;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,11 +29,14 @@ public class Event {
     private String description;
     @NotNull
     @FutureOrPresent
-    private Date start;
+    private Timestamp start;
     @NotNull
     @FutureOrPresent
-    private Date end;
-
+    private Timestamp end;
+    @NotNull
+    @ManyToOne
+    private Hotel hotel;
+    
 
 
 }

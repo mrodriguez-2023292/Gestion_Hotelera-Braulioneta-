@@ -24,10 +24,17 @@ public class AdditionalService {
     @NotBlank
     private String service_name;
 
+    @NotBlank
+    private String description;
+
     @NotNull
     private float price;
 
     @NotNull
     @ManyToOne
     private Event event;
+
+    @NotNull
+    @ManyToOne
+    private Room room;
 }
