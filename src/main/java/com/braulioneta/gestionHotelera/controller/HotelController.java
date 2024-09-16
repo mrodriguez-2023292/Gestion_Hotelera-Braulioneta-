@@ -83,7 +83,7 @@ public class HotelController {
                 hotel.getAddress(),
                 hotel.getCategory(),
                 hotel.getPhone(),
-                hotel.getEmail_contact()
+                hotel.getEmailContact()
             );
             hotelService.saveHotel(newhotel);
             res.put("message", "Hotel guardado correctamente");

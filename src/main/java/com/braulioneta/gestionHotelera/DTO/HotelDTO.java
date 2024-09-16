@@ -26,5 +26,5 @@ public class HotelDTO {
     // Correo electrónico del hotel. Debe ser un correo válido y no puede estar vacío
     @Email(message = "Debe proporcionar un correo válido")
     @NotBlank(message = "El correo no puede ir vacío")
-    private String email_contact;
+    private String emailContact;
 }

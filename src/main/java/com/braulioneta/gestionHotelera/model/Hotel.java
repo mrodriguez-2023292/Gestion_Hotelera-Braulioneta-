@@ -45,5 +45,5 @@ public class Hotel {
     @Email // Valida que sea una dirección de correo válida
     @NotBlank // Valida que no esté vacío ni en blanco
     @Column(unique = true) // El correo debe ser único en la base de datos
-    private String email_contact;
+    private String emailContact;
 }

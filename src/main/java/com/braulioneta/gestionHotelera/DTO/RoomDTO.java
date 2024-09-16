@@ -31,5 +31,5 @@ public class RoomDTO {
 
     @NotBlank(message = "No puede ir sin relacion")
     @ManyToOne //Por defecto tiene un Eager (población de datos)
-    private Hotel hotel;
+    private Hotel hotelId;
 }

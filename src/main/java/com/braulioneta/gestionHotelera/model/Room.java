@@ -51,7 +51,7 @@ public class Room {
     // Se hace la llave foranea
     @NotBlank
     @ManyToOne //Por defecto tiene un Eager (población de datos)
-    private Hotel hotel;
+    private Hotel hotelId;
 }
 
 
