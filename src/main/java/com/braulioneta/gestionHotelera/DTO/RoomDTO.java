@@ -1,8 +1,10 @@
 package com.braulioneta.gestionHotelera.DTO;
 
+import com.braulioneta.gestionHotelera.model.Hotel;
 import com.braulioneta.gestionHotelera.utils.StatusRoom;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -26,4 +28,8 @@ public class RoomDTO {
     @NotNull(message = "Seleccione una opción, si no se quedará como disponible.")
     @Enumerated(EnumType.STRING) // Almacena el estado como una cadena en la base de datos
     private StatusRoom status = StatusRoom.AVAILABLE; // Valor por defecto: DISPONIBLE
+
+    @NotBlank(message = "No puede ir sin relacion")
+    @ManyToOne //Por defecto tiene un Eager (población de datos)
+    private Hotel hotel;
 }

@@ -82,7 +82,8 @@ public class RoomController {
                 room.getType(),
                 room.getCapacity(),
                 room.getPrice(),
-                room.getStatus()
+                room.getStatus(),
+                room.getHotel()
             );
             roomService.saveRoom(newroom);
             res.put("message", "Habitación guardada correctamente");

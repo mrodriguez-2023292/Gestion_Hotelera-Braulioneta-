@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -46,6 +47,11 @@ public class Room {
     @Enumerated(EnumType.STRING)
     @NotNull
     private StatusRoom status = StatusRoom.AVAILABLE;
+
+    // Se hace la llave foranea
+    @NotBlank
+    @ManyToOne //Por defecto tiene un Eager (población de datos)
+    private Hotel hotel;
 }
 
 
