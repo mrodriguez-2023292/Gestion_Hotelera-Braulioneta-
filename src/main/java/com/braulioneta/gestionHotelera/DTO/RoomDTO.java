@@ -29,7 +29,7 @@ public class RoomDTO {
     @Enumerated(EnumType.STRING) // Almacena el estado como una cadena en la base de datos
     private StatusRoom status = StatusRoom.AVAILABLE; // Valor por defecto: DISPONIBLE
 
-    @NotBlank(message = "No puede ir sin relacion")
+    @NotBlank(message = "No hay hotel para reservar")
     @ManyToOne //Por defecto tiene un Eager (población de datos)
     private Hotel hotelId;
 }
