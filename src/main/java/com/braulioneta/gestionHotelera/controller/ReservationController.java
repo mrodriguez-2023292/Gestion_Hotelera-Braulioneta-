@@ -20,27 +20,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.braulioneta.gestionHotelera.DTO.RoomDTO;
-import com.braulioneta.gestionHotelera.model.Room;
-import com.braulioneta.gestionHotelera.service.RoomService;
+import com.braulioneta.gestionHotelera.DTO.ReservationResponseDTO;
+import com.braulioneta.gestionHotelera.DTO.ReservationSaveDTO;
+import com.braulioneta.gestionHotelera.model.Reservation;
+import com.braulioneta.gestionHotelera.service.ReservationService;
 
 import jakarta.persistence.NoResultException;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/gestionHotelera/room")
-public class RoomController {
+@RequestMapping("/gestionHotelera/reservation")
+public class ReservationController {
 
     @Autowired
-    RoomService roomService;
+    ReservationService reservationService;
 
     @GetMapping()
-    public ResponseEntity<?> getMethodId() {
+    public ResponseEntity<?> getReservations(){
         Map<String, Object> res = new HashMap<>();
-        try { 
-            return ResponseEntity.ok().body(roomService.listRooms());
+        try {
+            return ResponseEntity.ok().body(reservationService.listReservations());
         } catch (CannotCreateTransactionException err) {
-            res.put("message", "Error al momento de conectarse a la BD");
+            res.put("message", "Error al momento de conectarse a la DB");
             res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
         } catch (DataAccessException err) {
@@ -54,100 +55,94 @@ public class RoomController {
         }
     }
 
-    @PostMapping("/addRoom")
-    public ResponseEntity<?> register(
-        @Valid @ModelAttribute RoomDTO roomDTO,
-        BindingResult result
-    ) {
+    @GetMapping("/findByUser/{userId}")
+    public ResponseEntity<?> myReservations(@PathVariable Long userId) {
         Map<String, Object> res = new HashMap<>();
-        
-        // Verificar si hay errores de validación
+        try{
+            List<ReservationResponseDTO> reservations = reservationService.myReservations(userId);
+            if(reservations == null || reservations.isEmpty()){
+                res.put("message", "Aún no tienes reservaciones creadas");
+                return ResponseEntity.status(404).body(res);
+            }else{
+                return ResponseEntity.ok(reservations);
+            }
+        }catch(Exception err){
+            res.put("message", "Error general al obtener los datos");
+            res.put("error", err);
+            return ResponseEntity.internalServerError().body(res);
+        }
+    }
+
+    @PostMapping("/reserve")
+    public ResponseEntity<?> saveReservation(
+        @Valid @ModelAttribute ReservationSaveDTO reservationDTO,
+        BindingResult result
+    ){
+        Map<String, Object> res = new HashMap<>();
+        if(result.hasErrors()){
+            List<String> errors = result.getFieldErrors()
+                .stream()
+                .map(error -> error.getDefaultMessage())
+                .collect(Collectors.toList());
+                res.put("Errors", errors);
+                return ResponseEntity.badRequest().body(res);
+        }
+        try {
+            Reservation reservation = reservationService.save(reservationDTO);
+            res.put("message", "Reservacion guaradada exitosamente");
+            res.put("reservation", reservation);
+            return ResponseEntity.ok(res);
+        } catch (Exception err) {
+            res.put("message", "Error al guardar la reservacion, intente de nuevo más tarde");
+            res.put("error", err.getMessage());
+            return ResponseEntity.internalServerError().body(res);
+        }
+    }
+
+    @PutMapping("/editReservation/{id}")
+    public  ResponseEntity<?> editReservation(
+        @PathVariable Long id,
+        @Valid @ModelAttribute ReservationSaveDTO reservationDTO,
+        BindingResult result
+    ){
+        Map<String, Object> res = new HashMap<>();
         if (result.hasErrors()) {
             List<String> errors = result.getFieldErrors()
                 .stream()
                 .map(error -> error.getDefaultMessage())
                 .collect(Collectors.toList());
-            
             res.put("message", "Error con las validaciones, por favor ingresa todos los campos");
-            res.put("errors", errors);
+            res.put("Errors", errors);
             return ResponseEntity.badRequest().body(res);
         }
-        
         try {
-            // Llamar al método del servicio para registrar la habitación
-            Room room = roomService.reserved(roomDTO);
-            
-            res.put("message", "Habitación guardada correctamente");
-            res.put("roomId", room.getId());  // O cualquier otro dato que quieras devolver
+            //Actualizar usando el metodo del servicio
+            Reservation updReservation = reservationService.update(id, reservationDTO);
+            res.put("message", "La reservación se actualizo correctamente");
+            res.put("reservation", updReservation);
             return ResponseEntity.ok(res);
-            
-        } catch (Exception err) {
-            res.put("message", "Error al guardar la habitación, intente de nuevo más tarde");
-            res.put("error", err.getMessage());
-            return ResponseEntity.internalServerError().body(res);
-        }
-    }
-    
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getRoomId(@PathVariable Long id) {
-        Map<String, Object> res = new HashMap<>();
-        try {
-            return ResponseEntity.ok().body(roomService.getRoom(id));
-            } catch (NoResultException err) {
-                res.put("message", "La habitación con el ID proporcionado no existe");
-                return ResponseEntity.status(503).body(res);
-            } catch (CannotCreateTransactionException err) {
-                res.put("message", "Error al momento de conectarse a la BD");
-                res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-                return ResponseEntity.status(503).body(res);
-            } catch (DataAccessException err) {
-                res.put("message", "Error al momento de consultar a la base de datos");
-                res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-                return ResponseEntity.status(503).body(res);
-            } catch (Exception err) {
-                res.put("message", "Error general al obtener los datos");
-                res.put("Error", err.getMessage());
-                return ResponseEntity.internalServerError().body(res);
-            }
-    }
-    
-
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<?> editRoom(@PathVariable Long id, @RequestBody RoomDTO roomDTO) {
-        Map<String, Object> res = new HashMap<>();
-
-        try {
-            // Llamar al método del servicio para actualizar la habitación
-            Room updatedRoom = roomService.update(id, roomDTO);
-            
-            res.put("message", "Habitación actualizada correctamente");
-            res.put("room", updatedRoom);
-            return ResponseEntity.ok(res);
-            
-        } catch (IllegalArgumentException e) {
+        }catch (IllegalArgumentException e) {
             res.put("message", e.getMessage());
             return ResponseEntity.status(404).body(res);
         } catch (Exception e) {
-            res.put("message", "Error general al actualizar la habitacion");
+            res.put("message", "Error general al actualizar el evento");
             res.put("Error", e.getMessage());
             return ResponseEntity.internalServerError().body(res);
         }
     }
 
-
-    @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<?> deleteRoom(@PathVariable Long id){
+    @DeleteMapping("/cancelReservation/{id}")
+    public ResponseEntity<?> cacelReservation(@PathVariable Long id){
         Map<String, Boolean> answer = new HashMap<>();
         Map<String, Object> res = new HashMap<>();
-        Room room = roomService.getRoom(id);
+        Reservation reservation = reservationService.getReservation(id);
 
-        try { 
-            roomService.eliminate(room);
-            answer.put("Eliminado", true);
+        try {
+            reservationService.cancelReservation(reservation);
+            answer.put("Cancelado", true);
             return ResponseEntity.ok(answer);
         } catch (NoResultException err) {
-            res.put("message", "La habitación con el ID proporcionado no existe");
+            res.put("message", "La reservacion con el ID brindado no existe");
             return ResponseEntity.status(503).body(res);
         } catch (CannotCreateTransactionException err) {
             res.put("message", "Error al momento de conectarse a la BD");
@@ -163,4 +158,6 @@ public class RoomController {
             return ResponseEntity.internalServerError().body(res);
         } 
     }
+
+
 }

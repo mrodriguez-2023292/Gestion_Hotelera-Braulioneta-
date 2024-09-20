@@ -1,49 +1,46 @@
 package com.braulioneta.gestionHotelera.model;
 
-import com.braulioneta.gestionHotelera.utils.Status;
+import java.sql.Date;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class Room {
+
+public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @NotBlank
-    private String type;
-
+    private String hotel_name;
     @NotNull
-    private Long capacity;
-
+    @FutureOrPresent
+    private Date report_date;
     @NotNull
-    private Float price;
-
-    @Enumerated(EnumType.STRING)
+    private Long total_reservations;
     @NotNull
-    private Status status = Status.AVAILABLE;
-
+    private Long total_rooms;
     @NotNull
-    @ManyToOne
-    private Hotel hotel;
+    private Long occupied_rooms;
+    @NotNull
+    private Float occupancy_rate;
+    @NotBlank
+    private String most_requested_hotel;
+ 
+   
 
-    public Room orElse(Object object) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'orElse'");
-    }
+
 }

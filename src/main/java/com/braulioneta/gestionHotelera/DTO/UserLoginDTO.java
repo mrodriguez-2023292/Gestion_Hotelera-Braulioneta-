@@ -6,9 +6,12 @@ import lombok.Data;
 @Data
 public class UserLoginDTO {
 
-    @NotBlank(message="El nombre de ususario es obligatorio")
+    @NotBlank(message = "El nombre de usuario no puede ir vacio")
     private String username;
-
-    @NotBlank(message="La contrasena no puede ir vacia")
+    @NotBlank(message = "La contraseña no puede ir vacia")
     private String password;
+
+
 }
+
+

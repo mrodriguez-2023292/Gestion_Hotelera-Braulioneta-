@@ -8,15 +8,15 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 @Component
 public class BCryptSecurity {
 
-    //Ocultar la password hasta 12 capas de encriptacion
-    public String encodePassword(String password){
+    // Método para encriptar la contraseña con un costo de 12
+    public String encodePassword(String password) {
         return BCrypt.withDefaults().hashToString(12, password.toCharArray());
     }
 
-    //Comparacion de la contraseña normal y la contraseña hashed (password encriptada)
-    public boolean checkPassword(String password, String hashedPassword){
-        BCrypt.Result res = BCrypt.verifyer().verify(password.toCharArray(), hashedPassword);
-        return res.verified;
+    // Método para verificar si la contraseña en texto plano coincide con el hash
+    public boolean checkPassword(String password, String hashedPassword) {
+        BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), hashedPassword);
+        return result.verified;
     }
 
 }

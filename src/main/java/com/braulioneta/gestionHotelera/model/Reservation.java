@@ -1,6 +1,6 @@
 package com.braulioneta.gestionHotelera.model;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import com.braulioneta.gestionHotelera.utils.Status;
 
@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,20 +28,32 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @FutureOrPresent
-    private Date startDate;
+    @NotNull
+    @FutureOrPresent 
+    private Timestamp startDate;
 
-    @NotBlank
+    @NotNull
     @FutureOrPresent
-    private Date endDate;
+    private Timestamp endDate;
 
     @Enumerated(EnumType.STRING)
     @NotNull
     private Status status;
 
-    /*Pendientes llaves foraneas
-    Room_id
-    User_id
-     */
+    @NotBlank
+    private String details;
+
+    @NotNull
+    @ManyToOne
+    private User user;
+
+    @NotNull
+    @ManyToOne
+    private Room room;
+
+    @NotNull
+    @ManyToOne
+    private Event event;
+
+
 }

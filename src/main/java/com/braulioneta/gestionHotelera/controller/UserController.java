@@ -12,7 +12,9 @@ import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +24,7 @@ import com.braulioneta.gestionHotelera.DTO.UserRegisterDTO;
 import com.braulioneta.gestionHotelera.model.User;
 import com.braulioneta.gestionHotelera.service.UserService;
 
+import jakarta.persistence.NoResultException;
 import jakarta.validation.Valid;
 
 
@@ -112,6 +115,40 @@ public class UserController {
             return ResponseEntity.internalServerError().body(res);
         }
     }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<?> editUser(@PathVariable Long id, @RequestBody User user) {
+        Map<String, Object> res = new HashMap<>();
+        User userEdit = userService.getUser(id);
+
+        userEdit.setName(user.getName());
+        userEdit.setSurname(user.getSurname());
+        userEdit.setUsername(user.getUsername());
+        userEdit.setEmail(user.getEmail());
+        userEdit.setPassword(user.getPassword());
+        userEdit.setPhone(user.getPhone());
+        userEdit.setUserType(user.getUserType());
+
+        try {
+            return ResponseEntity.ok().body(userService.register(userEdit));
+        } catch (NoResultException err) {
+                res.put("message", "El usuario con el ID proporcionado no existe");
+                return ResponseEntity.status(503).body(res);
+        } catch (CannotCreateTransactionException err) {
+            res.put("message", "Error al momento de conectarse a la BD");
+            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException err) {
+            res.put("message", "Error al momento de consultar a la base de datos");
+            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception err) {
+            res.put("message", "Error general al obtener los datos");
+            res.put("Error", err.getMessage());
+            return ResponseEntity.internalServerError().body(res);
+        } 
     
+
+    }
 
 }
