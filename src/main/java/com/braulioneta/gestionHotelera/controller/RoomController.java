@@ -34,7 +34,9 @@ public class RoomController {
     @Autowired
     RoomService roomService;
 
-    @GetMapping()
+    // Obtiene la lista de todas las habitaciones.
+    // @return ResponseEntity con la lista de habitaciones si la operación es exitosa. Si ocurre un error, devuelve una respuesta con un mensaje de error adecuado.
+    @GetMapping
     public ResponseEntity<?> getMethodId() {
         Map<String, Object> res = new HashMap<>();
         try { 
@@ -54,8 +56,12 @@ public class RoomController {
         }
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(
+    // Guarda una nueva habitación en la base de datos.
+    // @param room DTO que contiene los datos de la habitación a guardar.
+    // @param result Resultados de la validación del DTO.
+    // @return ResponseEntity con un mensaje de éxito si la operación es exitosa, o un mensaje de error si ocurre un problema durante la validación o el guardado.
+    @PostMapping("/save")
+    public ResponseEntity<?> saveRoom(
         @Valid @ModelAttribute RoomDTO room,
         BindingResult result
     ) {
@@ -74,46 +80,53 @@ public class RoomController {
             Room newroom = new Room(
                 id,
                 room.getType(),
-                room.getCapacity(), 
+                room.getCapacity(),
                 room.getPrice(),
-                room.getStatus()
+                room.getStatus(),
+                room.getHotelId()
             );
-            roomService.register(newroom);
-            res.put("message", "Habitacion guardada correctamente");
+            roomService.saveRoom(newroom);
+            res.put("message", "Habitación guardada correctamente");
             return ResponseEntity.ok(res);
         } catch (Exception err) {
-            res.put("message", "Error al guardar la habitacion, intente de nuevo más tarde");
+            res.put("message", "Error al guardar la habitación, intente de nuevo más tarde");
             res.put("error", err.getMessage());
             return ResponseEntity.internalServerError().body(res);
         }
     }
 
+    // Obtiene una habitación por su ID.
+    // @param id ID de la habitación que se desea obtener.
+    // @return ResponseEntity con la habitación si se encuentra o un mensaje de error si no existe.
     @GetMapping("/{id}")
     public ResponseEntity<?> getRoomId(@PathVariable Long id) {
         Map<String, Object> res = new HashMap<>();
         try {
             return ResponseEntity.ok().body(roomService.getRoom(id));
-            } catch (NoResultException err) {
-                res.put("message", "La habitación con el ID proporcionado no existe");
-                return ResponseEntity.status(503).body(res);
-            } catch (CannotCreateTransactionException err) {
-                res.put("message", "Error al momento de conectarse a la BD");
-                res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-                return ResponseEntity.status(503).body(res);
-            } catch (DataAccessException err) {
-                res.put("message", "Error al momento de consultar a la base de datos");
-                res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-                return ResponseEntity.status(503).body(res);
-            } catch (Exception err) {
-                res.put("message", "Error general al obtener los datos");
-                res.put("Error", err.getMessage());
-                return ResponseEntity.internalServerError().body(res);
-            }
+        } catch (NoResultException err) {
+            res.put("message", "La habitación con el ID proporcionado no existe");
+            return ResponseEntity.status(503).body(res);
+        } catch (CannotCreateTransactionException err) {
+            res.put("message", "Error al momento de conectarse a la BD");
+            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException err) {
+            res.put("message", "Error al momento de consultar a la base de datos");
+            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception err) {
+            res.put("message", "Error general al obtener los datos");
+            res.put("Error", err.getMessage());
+            return ResponseEntity.internalServerError().body(res);
+        }
     }
-    
 
-    @PutMapping("/editar/{id}")
-    public ResponseEntity<?> editRoom(@PathVariable Long id, @RequestBody Room received){
+    // Edita una habitación existente.
+    // @param id ID de la habitación que se desea editar.
+    // @param received Objeto Room con los datos actualizados.
+    // @return ResponseEntity con la habitación actualizada si la operación es exitosa, o un mensaje de error si ocurre un problema.
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<?> editRoom(@PathVariable Long id, @RequestBody Room received) {
         Map<String, Object> res = new HashMap<>();
         Room room = roomService.getRoom(id);
 
@@ -123,33 +136,36 @@ public class RoomController {
         room.setStatus(received.getStatus());
 
         try { 
-            return ResponseEntity.ok().body(roomService.register(room));
-            } catch (NoResultException err) {
-                res.put("message", "La habitación con el ID proporcionado no existe");
-                return ResponseEntity.status(503).body(res);
-            } catch (CannotCreateTransactionException err) {
-                res.put("message", "Error al momento de conectarse a la BD");
-                res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-                return ResponseEntity.status(503).body(res);
-            } catch (DataAccessException err) {
-                res.put("message", "Error al momento de consultar a la base de datos");
-                res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-                return ResponseEntity.status(503).body(res);
-            } catch (Exception err) {
-                res.put("message", "Error general al obtener los datos");
-                res.put("Error", err.getMessage());
-                return ResponseEntity.internalServerError().body(res);
-            } 
+            return ResponseEntity.ok().body(roomService.saveRoom(room));
+        } catch (NoResultException err) {
+            res.put("message", "La habitación con el ID proporcionado no existe");
+            return ResponseEntity.status(503).body(res);
+        } catch (CannotCreateTransactionException err) {
+            res.put("message", "Error al momento de conectarse a la BD");
+            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException err) {
+            res.put("message", "Error al momento de consultar a la base de datos");
+            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception err) {
+            res.put("message", "Error general al obtener los datos");
+            res.put("Error", err.getMessage());
+            return ResponseEntity.internalServerError().body(res);
+        } 
     }
 
-    @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<?> deleteRoom(@PathVariable Long id){
+    // Elimina una habitación por su ID.
+    // @param id ID de la habitación que se desea eliminar.
+    // @return ResponseEntity con un mensaje de confirmación si la operación es exitosa, o un mensaje de error si ocurre un problema.
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteRoom(@PathVariable Long id) {
         Map<String, Boolean> answer = new HashMap<>();
         Map<String, Object> res = new HashMap<>();
         Room room = roomService.getRoom(id);
 
         try { 
-            roomService.eliminate(room);
+            roomService.eliminateRoom(room);
             answer.put("Eliminado", true);
             return ResponseEntity.ok(answer);
         } catch (NoResultException err) {
