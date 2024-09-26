@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.braulioneta.gestionHotelera.DTO.ReportDTO;
+import com.braulioneta.gestionHotelera.DTO.ReportSaveDTO;
 import com.braulioneta.gestionHotelera.model.Report;
 import com.braulioneta.gestionHotelera.service.ReportService;
 
 import jakarta.persistence.NoResultException;
 import jakarta.validation.Valid;
 
+// Controlador REST para manejar las operaciones relacionadas con los reportes
 @RestController
 @RequestMapping("/gestionHotelera/report")
 public class ReportController {
@@ -33,13 +33,14 @@ public class ReportController {
     @Autowired
     ReportService reportService;
 
+    // Obtiene todos los reportes
     @GetMapping()
     public ResponseEntity<?> getReport(){
         Map<String, Object> res = new HashMap<>();
 
-        try{
+        try {
             return ResponseEntity.ok().body(reportService.listReports());
-        }catch (CannotCreateTransactionException err) {
+        } catch (CannotCreateTransactionException err) {
             res.put("message", "Error al momento de conectarse a la BD");
             res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
             return ResponseEntity.status(503).body(res);
@@ -54,101 +55,60 @@ public class ReportController {
         }
     }
 
+    // Obtiene un reporte específico por su ID
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getReport(@PathVariable Long id) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            return ResponseEntity.ok().body(reportService.getReport(id));
+        } catch (NoResultException err) {
+            res.put("message", "El reporte no existe");
+            return ResponseEntity.status(503).body(res);
+        } catch (CannotCreateTransactionException err) {
+            res.put("message", "Error al momento de conectarse a la BD");
+            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (DataAccessException err) {
+            res.put("message", "Error al momento de consultar a la base de datos");
+            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
+            return ResponseEntity.status(503).body(res);
+        } catch (Exception err) {
+            res.put("message", "Error general al obtener los datos");
+            res.put("Error", err.getMessage());
+            return ResponseEntity.internalServerError().body(res);
+        }
+    }
+
+    // Agrega un nuevo reporte
     @PostMapping("/addReport")
-    public ResponseEntity<?>  addReport(
-        @Valid @ModelAttribute ReportDTO report,
+    public ResponseEntity<?> addReport(
+        @Valid @ModelAttribute ReportSaveDTO report,
         BindingResult result
     ){
-        Map<String, Object>  res = new HashMap<>();
-        if(result.hasErrors()){
+        Map<String, Object> res = new HashMap<>();
+        if (result.hasErrors()) {
             List<String> errors = result.getFieldErrors()
                 .stream()
                 .map(error -> error.getDefaultMessage())
                 .collect(Collectors.toList());
-                res.put("message", "Error con las validaciones, por favor ingresa todos los campos");
-                res.put("Errors", errors);
-                return ResponseEntity.badRequest().body(res);
+            res.put("message", "Error con las validaciones, por favor ingresa todos los campos");
+            res.put("Errors", errors);
+            return ResponseEntity.badRequest().body(res);
         }
-        try{
-           Long id = null;
-           Report newreport = new Report(
-            id,
-            report.getHotel_name(),
-            report.getReport_date(),
-            report.getTotal_reservations(),
-            report.getTotal_rooms(),
-            report.getOccupied_rooms(),
-            report.getOccupancy_rate(),
-            report.getMost_requested_hotel()
-           );
-           reportService.addReport(newreport);
-           res.put("message", "Reporte  agregado con exito");
+        try {
+            Report reportAdd = reportService.addReport(report);
+
+            res.put("message", "Reporte agregado con éxito");
+            res.put("report", reportAdd);
             return ResponseEntity.ok(res);
-        }catch (Exception err) {
-            res.put("message", "Error al guardar la habitacion, intente de nuevo más tarde");
+        } catch (Exception err) {
+            res.put("message", "Error al guardar el reporte, intente de nuevo más tarde");
             res.put("error", err.getMessage());
             return ResponseEntity.internalServerError().body(res);
         }
-
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getReport(@PathVariable Long id) {
-        Map<String, Object> res = new HashMap<>();
-        try{
-            return ResponseEntity.ok().body(reportService.getReport(id));
-        }catch (NoResultException err) {
-            res.put("message", "El reporte no existe");
-            return ResponseEntity.status(503).body(res);
-        } catch (CannotCreateTransactionException err) {
-            res.put("message", "Error al momento de conectarse a la BD");
-            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-            return ResponseEntity.status(503).body(res);
-        } catch (DataAccessException err) {
-            res.put("message", "Error al momento de consultar a la base de datos");
-            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-            return ResponseEntity.status(503).body(res);
-        } catch (Exception err) {
-            res.put("message", "Error general al obtener los datos");
-            res.put("Error", err.getMessage());
-            return ResponseEntity.internalServerError().body(res);
-        }
-    }
-    
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<?> editReport(@PathVariable Long id, @RequestBody Report report) {
-        Map<String, Object> res = new HashMap<>();
-        Report report2 = reportService.getReport(id);
-
-        report2.setHotel_name(report.getHotel_name());
-        report2.setReport_date(report.getReport_date());
-        report2.setTotal_reservations(report.getTotal_reservations());
-        report2.setTotal_rooms(report.getTotal_rooms());
-        report2.setOccupied_rooms(report.getOccupied_rooms());
-        report2.setOccupancy_rate(report.getOccupancy_rate());
-        report2.setMost_requested_hotel(report.getMost_requested_hotel());
-
-        try{
-            return ResponseEntity.ok().body(reportService.addReport(report2));
-        }catch (NoResultException err) {
-            res.put("message", "El reporte no existe");
-            return ResponseEntity.status(503).body(res);
-        } catch (CannotCreateTransactionException err) {
-            res.put("message", "Error al momento de conectarse a la BD");
-            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-            return ResponseEntity.status(503).body(res);
-        } catch (DataAccessException err) {
-            res.put("message", "Error al momento de consultar a la base de datos");
-            res.put("Error", err.getMessage().concat(err.getMostSpecificCause().getMessage()));
-            return ResponseEntity.status(503).body(res);
-        } catch (Exception err) {
-            res.put("message", "Error general al obtener los datos");
-            res.put("Error", err.getMessage());
-            return ResponseEntity.internalServerError().body(res);
-        }
-
-    }
-
+    // Elimina un reporte por su ID
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteReport(@PathVariable Long id) {
         Map<String, Boolean> answer = new HashMap<>();
@@ -156,11 +116,11 @@ public class ReportController {
 
         Report report = reportService.getReport(id);
 
-        try{
+        try {
             reportService.deleteReport(report);
             answer.put("Eliminado", true);
             return ResponseEntity.ok(answer);
-        }catch (NoResultException err) {
+        } catch (NoResultException err) {
             res.put("message", "El reporte no existe");
             return ResponseEntity.status(503).body(res);
         } catch (CannotCreateTransactionException err) {
@@ -176,6 +136,5 @@ public class ReportController {
             res.put("Error", err.getMessage());
             return ResponseEntity.internalServerError().body(res);
         } 
-
     }
 }

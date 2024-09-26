@@ -4,20 +4,26 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-@Data
+@Data // Genera automáticamente getters, setters, equals, hashCode y toString
 public class AdditionalServiceDTO {
-    @NotBlank(message = "El nombre del servicio no puede ir vacio")
-    private String service_name;
+    
+    // Nombre del servicio adicional. Este campo no puede estar vacío.
+    @NotBlank(message = "El nombre del servicio no puede ir vacío")
+    private String name;
 
-    @NotBlank(message = "La descripcion del servicio no puede ir vacio")
+    // Descripción del servicio adicional. Este campo no puede estar vacío.
+    @NotBlank(message = "La descripción del servicio no puede ir vacío")
     private String description;
 
-    @NotNull(message = "El precio del servicio no puede ir vacio")
+    // Precio del servicio adicional. Este campo no puede ser nulo.
+    @NotNull(message = "El precio del servicio no puede ir vacío")
     private float price;
 
+    // Identificador del evento asociado al servicio adicional. Este campo no puede ser nulo.
     @NotNull(message = "No hay evento para reservar")
-    private Long event;
+    private Long eventId;
 
-    @NotNull(message = "No hay habitacion para reservar")
-    private Long room;
+    // Identificador de la habitación asociada al servicio adicional. Este campo no puede ser nulo.
+    @NotNull(message = "No hay habitación para reservar")
+    private Long roomId;
 }

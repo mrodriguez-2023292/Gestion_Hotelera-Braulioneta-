@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.braulioneta.gestionHotelera.model.Report;
 
-public interface ReportRepository extends JpaRepository <Report, Long>{
-  
+// Esta interfaz maneja las operaciones con la base de datos para la entidad report
+public interface ReportRepository extends JpaRepository<Report, Long> {
+    
+    // Repositorio para la entidad Report, proporciona operaciones CRUD básicas
 }
