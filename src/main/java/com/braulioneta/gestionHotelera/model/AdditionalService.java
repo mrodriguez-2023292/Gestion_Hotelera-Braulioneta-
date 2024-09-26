@@ -1,12 +1,12 @@
 package com.braulioneta.gestionHotelera.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,32 +15,32 @@ import lombok.NoArgsConstructor;
 @Entity // Indica que esta clase es una entidad JPA (una tabla en la base de datos)
 @AllArgsConstructor // Crea un constructor con todos los atributos
 @NoArgsConstructor // Crea un constructor sin parámetros
-public class Hotel {
+public class AdditionalService {
 
-    // Identificador único para cada hotel
+    // Identificador único para cada servicio adicional
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Nombre del hotel, no puede estar en blanco
+    // Nombre del servicio adicional, no puede estar en blanco
     @NotBlank
     private String name;
 
-    // Dirección del hotel, no puede estar en blanco
+    // Descripción del servicio adicional, no puede estar en blanco
     @NotBlank
-    private String address;
+    private String description;
 
-    // Categoría del hotel (ej. 5 estrellas), no puede estar en blanco
-    @NotBlank
-    private String category;
-    
-    // Número de teléfono del hotel, no puede estar en blanco
-    @NotBlank
-    private String phone;
+    // Precio del servicio adicional, debe ser un valor no nulo
+    @NotNull
+    private float price;
 
-    // Correo electrónico de contacto del hotel, debe ser válido y único en la base de datos
-    @Email
-    @NotBlank
-    @Column(unique = true)
-    private String emailContact;
+    // Evento asociado al servicio adicional, no puede ser nulo
+    @NotNull
+    @ManyToOne
+    private Event event;
+
+    // Habitación asociada al servicio adicional, no puede ser nula
+    @NotNull
+    @ManyToOne
+    private Room room;
 }

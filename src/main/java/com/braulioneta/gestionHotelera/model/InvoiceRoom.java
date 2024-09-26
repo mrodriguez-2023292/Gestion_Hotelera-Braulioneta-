@@ -1,12 +1,15 @@
 package com.braulioneta.gestionHotelera.model;
 
-import jakarta.persistence.Column;
+import java.sql.Timestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,32 +18,28 @@ import lombok.NoArgsConstructor;
 @Entity // Indica que esta clase es una entidad JPA (una tabla en la base de datos)
 @AllArgsConstructor // Crea un constructor con todos los atributos
 @NoArgsConstructor // Crea un constructor sin parámetros
-public class Hotel {
+public class InvoiceRoom {
 
-    // Identificador único para cada hotel
+    // Identificador único para cada factura de habitación
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Nombre del hotel, no puede estar en blanco
-    @NotBlank
-    private String name;
+    // Fecha de la factura, debe ser en el presente o futuro
+    @NotNull
+    @FutureOrPresent
+    private Timestamp date;
 
-    // Dirección del hotel, no puede estar en blanco
-    @NotBlank
-    private String address;
+    // Total de la factura, debe ser un valor no nulo
+    @NotNull
+    private Long total;
 
-    // Categoría del hotel (ej. 5 estrellas), no puede estar en blanco
+    // Método de pago utilizado, no puede estar en blanco
     @NotBlank
-    private String category;
-    
-    // Número de teléfono del hotel, no puede estar en blanco
-    @NotBlank
-    private String phone;
+    private String paymentMethod;
 
-    // Correo electrónico de contacto del hotel, debe ser válido y único en la base de datos
-    @Email
-    @NotBlank
-    @Column(unique = true)
-    private String emailContact;
+    // Habitación asociada a la factura, debe ser una habitación válida y no nula
+    @NotNull
+    @ManyToOne
+    private Room roomId;
 }

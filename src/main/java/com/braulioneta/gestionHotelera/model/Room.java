@@ -1,6 +1,6 @@
 package com.braulioneta.gestionHotelera.model;
 
-import com.braulioneta.gestionHotelera.utils.StatusRoom;
+import com.braulioneta.gestionHotelera.utils.RoomStatus;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,10 +19,10 @@ import lombok.NoArgsConstructor;
 @Entity // Indica que esta clase es una entidad JPA (una tabla en la base de datos)
 @AllArgsConstructor // Crea un constructor con todos los atributos
 @NoArgsConstructor // Crea un constructor sin parámetros
-
 public class Room {
 
-    @Id// Identificador único de la habitación. Se genera automáticamente.
+    // Identificador único de la habitación. Se genera automáticamente.
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -46,12 +46,11 @@ public class Room {
     // Este campo es obligatorio y por defecto está en estado AVAILABLE.
     @Enumerated(EnumType.STRING)
     @NotNull
-    private StatusRoom status = StatusRoom.AVAILABLE;
+    private RoomStatus status = RoomStatus.AVAILABLE;
 
-    // Se hace la llave foranea
-    @NotBlank
-    @ManyToOne //Por defecto tiene un Eager (población de datos)
+    // Relación con la entidad Hotel. La habitación pertenece a un hotel específico.
+    // Este campo es obligatorio y establece una relación ManyToOne con la entidad Hotel.
+    @NotNull
+    @ManyToOne // Relación con el hotel. Por defecto se utiliza una carga EAGER.
     private Hotel hotelId;
 }
-
-
