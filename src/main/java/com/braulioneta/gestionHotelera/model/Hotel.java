@@ -15,35 +15,32 @@ import lombok.NoArgsConstructor;
 @Entity // Indica que esta clase es una entidad JPA (una tabla en la base de datos)
 @AllArgsConstructor // Crea un constructor con todos los atributos
 @NoArgsConstructor // Crea un constructor sin parámetros
-
 public class Hotel {
-    
-   
-    // Identificador único del hotel. Se genera automáticamente al crear un nuevo hotel.
-    @Id // Define la clave primaria de la entidad
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Se genera automáticamente (auto-incremento en la base de datos)
+
+    // Identificador único para cada hotel
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Nombre del hotel. No puede estar vacío.
-    @NotBlank // Valida que no esté vacío ni en blanco
+    // Nombre del hotel, no puede estar en blanco
+    @NotBlank
     private String name;
 
-    
-    // Dirección del hotel. No puede estar vacía.
-    @NotBlank // Valida que no esté vacía ni en blanco
+    // Dirección del hotel, no puede estar en blanco
+    @NotBlank
     private String address;
 
-    // Categoría del hotel (por ejemplo, 3 estrellas, 4 estrellas). No puede estar vacía.
-    @NotBlank // Valida que no esté vacía ni en blanco
+    // Categoría del hotel (ej. 5 estrellas), no puede estar en blanco
+    @NotBlank
     private String category;
     
-    // Teléfono del hotel. No puede estar vacío.
-    @NotBlank // Valida que no esté vacío ni en blanco
+    // Número de teléfono del hotel, no puede estar en blanco
+    @NotBlank
     private String phone;
 
-    // Correo de contacto del hotel. Debe ser un correo válido y único en la base de datos.
-    @Email // Valida que sea una dirección de correo válida
-    @NotBlank // Valida que no esté vacío ni en blanco
-    @Column(unique = true) // El correo debe ser único en la base de datos
+    // Correo electrónico de contacto del hotel, debe ser válido y único en la base de datos
+    @Email
+    @NotBlank
+    @Column(unique = true)
     private String emailContact;
 }
